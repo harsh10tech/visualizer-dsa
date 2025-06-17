@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Point } from '../models/cordinates/Points/point';
 import { HexagonCordinate } from '../models/cordinates/hexagon/hexagon-cordinate';
+import { Hexagon } from '../models/shapes/hexagon';
 
 @Component({
   selector: 'app-path-finder',
@@ -22,11 +23,12 @@ export class PathFinderComponent {
   private HEX_HEIGHT: number = 0;
   private HEX_WIDTH: number = 0;
   private HEX_SIZE: number = 0;
-  private centers: Array<Point> = [];
-  private hexaCordinates: Array<HexagonCordinate> = [];
+  private centers: Array<Point>;
+  private hexaCordinates: Array<HexagonCordinate>;
+  private hexagons: Map<string, Hexagon>;
+  private typeOfTraffic:string[] = ['red','orange','yellow','green'];
 
-  @ViewChild('hexCanvas', { static: false })
-  canvasEle!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('hexCanvas', { static: false }) canvasEle!: ElementRef<HTMLCanvasElement>;
   private cntx!: CanvasRenderingContext2D;
   private canvas!: HTMLCanvasElement;
 
@@ -50,7 +52,11 @@ export class PathFinderComponent {
     }
   }
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private el: ElementRef, private renderer: Renderer2) {
+    this.centers = new Array<Point>();
+    this.hexaCordinates = new Array<HexagonCordinate>();
+    this.hexagons = new Map();
+  }
 
   private directionTo(i: number): [number, number] {
     switch (i) {
@@ -81,7 +87,7 @@ export class PathFinderComponent {
     return new Point(x, y);
   }
 
-  private drawHexagon(x: number,y: number,hexSize: number,lineWidth: number = 2): void {
+  private drawHexagon(x: number,y: number,hexSize: number,lineWidth: number = 2): HexagonCordinate {
     this.cntx.beginPath();
     let p:Array<Point> = [];
     for (let i = 0; i < 6; i++) {
@@ -92,19 +98,19 @@ export class PathFinderComponent {
       else this.cntx.lineTo(px, py);
       p.push(new Point(px,py));
     }
-    this.hexaCordinates.push(new HexagonCordinate(p[0],p[1],p[2],p[3],p[4],p[5]));
     this.cntx.closePath();
-
+    
     if (true) {
       this.cntx.fillStyle = 'white';
       this.cntx.fill();
     }
-
+    
     if (true) {
       this.cntx.strokeStyle = 'grey';
       this.cntx.lineWidth = lineWidth;
       this.cntx.stroke();
     }
+    return new HexagonCordinate(p[0],p[1],p[2],p[3],p[4],p[5]);
   }
 
   private drawOnCanvas(): void {
@@ -114,8 +120,74 @@ export class PathFinderComponent {
     for (let row = 0; row < this.ROWS; row++) {
       for (let col = 0; col < this.COLS; col++) {
         const center = this.getHexCenter(row, col);
-        this.centers.push({ x: center.x, y: center.y });
-        this.drawHexagon(center.x, center.y, this.HEX_SIZE - 1, 1);
+        const hexCordinate =  this.drawHexagon(center.x, center.y, this.HEX_SIZE - 1, 1);
+        this.centers.push(center);
+        this.hexaCordinates.push(hexCordinate);
+        const hexagon = new Hexagon(center,hexCordinate)
+
+        this.hexagons.set(center.asKey(),hexagon);
+      }
+    }
+    console.log(Math.floor(this.ROWS)*Math.floor(this.COLS),this.hexaCordinates.length,this.centers.length);
+  }
+
+  private getNeighbors(currCenter:Point): void{
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 6) + (Math.PI / 3) * i;
+      const px = currCenter.x + Math.sqrt(3) * this.HEX_SIZE * Math.cos(angle);
+      const py = currCenter.y + Math.sqrt(3) * this.HEX_SIZE * Math.sin(angle);
+      const newPoint = new Point(px,py);
+      const hex = this.getHexaCordinates(newPoint);
+      // if(hex){
+      //   const newHex = this.getCenter(hex);
+      //   if(newHex)console.log(newHex.x-newPoint.x , newHex.y-newPoint.y);
+      // }
+      // console.log(newPoint);
+      const neighbor = this.hexagons.get(newPoint.asKey());
+      const current = this.hexagons.get(currCenter.asKey());
+      console.log("neighbor");
+      console.log(neighbor,current);
+      console.log("be")
+      if(neighbor && current){
+        // if(hex)this.colorHexagon(hex,'blue');
+        current.neighbors[i] = neighbor;
+      }
+    }
+  }
+
+  private getCenter(hex:HexagonCordinate):Point | null{
+    if(hex){
+      for(let hexagon of this.hexagons){
+        if(hexagon[1].cordidates === hex){
+          return hexagon[1].center;
+        }
+      }
+    }
+    return null;
+  }
+
+  private populateNeighbors():void{
+    const stack = [];
+    const center = this.getHexCenter(0,0);
+    const current = this.hexagons.get(center.asKey());
+    if(current){
+      current.visit = true;
+      stack.push(current);
+
+      while(stack.length > 0){
+        this.getNeighbors(current.center);
+        const neighbors = current.neighbors;
+
+        for(let i=0;i<6;i++){
+          if(neighbors[i]){
+            const traffic = this.typeOfTraffic[Math.floor(Math.random() * 4)]
+            current.traffic[i] = traffic;
+            const next = this.hexagons.get(neighbors[i].center.asKey());
+            if(next)next.traffic[(i+3)%6] = traffic;
+            
+          }
+        }
+        
       }
     }
   }
@@ -186,6 +258,7 @@ export class PathFinderComponent {
     this.resetAllHexagons();
   }
 
+  //useless
   private closestCordinate(point: Point): Point {
     let resPoint = this.centers[0];
     var minDistance = this.getDistance(resPoint, point);
