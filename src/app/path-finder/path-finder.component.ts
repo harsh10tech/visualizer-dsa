@@ -128,6 +128,7 @@ export class PathFinderComponent {
         this.hexagons.set(center.asKey(),hexagon);
       }
     }
+    this.populateNeighbors();
     console.log(Math.floor(this.ROWS)*Math.floor(this.COLS),this.hexaCordinates.length,this.centers.length);
   }
 
@@ -137,7 +138,7 @@ export class PathFinderComponent {
       const px = currCenter.x + Math.sqrt(3) * this.HEX_SIZE * Math.cos(angle);
       const py = currCenter.y + Math.sqrt(3) * this.HEX_SIZE * Math.sin(angle);
       const newPoint = new Point(px,py);
-      const hex = this.getHexaCordinates(newPoint);
+      // const hex = this.getHexaCordinates(newPoint);
       // if(hex){
       //   const newHex = this.getCenter(hex);
       //   if(newHex)console.log(newHex.x-newPoint.x , newHex.y-newPoint.y);
@@ -145,9 +146,9 @@ export class PathFinderComponent {
       // console.log(newPoint);
       const neighbor = this.hexagons.get(newPoint.asKey());
       const current = this.hexagons.get(currCenter.asKey());
-      console.log("neighbor");
-      console.log(neighbor,current);
-      console.log("be")
+      // console.log("neighbor");
+      // console.log(neighbor,current);
+      // console.log("be")
       if(neighbor && current){
         // if(hex)this.colorHexagon(hex,'blue');
         current.neighbors[i] = neighbor;
@@ -155,6 +156,7 @@ export class PathFinderComponent {
     }
   }
 
+  //Testing purpose
   private getCenter(hex:HexagonCordinate):Point | null{
     if(hex){
       for(let hexagon of this.hexagons){
@@ -167,27 +169,29 @@ export class PathFinderComponent {
   }
 
   private populateNeighbors():void{
-    const stack = [];
-    const center = this.getHexCenter(0,0);
-    const current = this.hexagons.get(center.asKey());
-    if(current){
-      current.visit = true;
-      stack.push(current);
-
-      while(stack.length > 0){
+    const stack:string[] = [];
+    let center = this.centers[0];
+    stack.push(center.asKey());
+    while(stack.length > 0){
+      const currCenter = stack.pop();
+      const current = currCenter ? this.hexagons.get(currCenter):null;
+      if(current){
+        current.visit = true;
         this.getNeighbors(current.center);
         const neighbors = current.neighbors;
-
+        const traffic = current.traffic;
         for(let i=0;i<6;i++){
-          if(neighbors[i]){
+          if(neighbors[i] && !traffic[i]){
             const traffic = this.typeOfTraffic[Math.floor(Math.random() * 4)]
             current.traffic[i] = traffic;
             const next = this.hexagons.get(neighbors[i].center.asKey());
-            if(next)next.traffic[(i+3)%6] = traffic;
-            
+            if(next){
+              next.traffic[(i+3)%6] = traffic;
+              if(!next.visit)stack.push(next.center.asKey());
+              this.colorTraffic(current.cordidates.getCord((i%6)+1),current.cordidates.getCord(((i%6)+2)%6),traffic);
+            }
           }
         }
-        
       }
     }
   }
@@ -204,6 +208,16 @@ export class PathFinderComponent {
     this.cntx.closePath();
     this.cntx.fillStyle = color;
     this.cntx.fill();
+  }
+  
+  private colorTraffic(p1:Point, p2:Point,color:string):void{
+    this.cntx.beginPath();
+    this.cntx.moveTo(p1.x,p1.y);
+    this.cntx.lineTo(p2.x,p2.y);
+    this.cntx.closePath()
+    this.cntx.strokeStyle = color;
+    this.cntx.lineWidth = 2;
+    this.cntx.stroke()
   }
 
   //#region Old One

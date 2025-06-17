@@ -24,7 +24,7 @@ export class HexagonCordinate {
     this.p6 = p6;
   }
 
-  public getCord(i:number):Point | null{
+  public getCord(i:number):Point{
     switch(i){
         case 1: return this.p1;
         case 2: return this.p2;
@@ -32,7 +32,7 @@ export class HexagonCordinate {
         case 4: return this.p4;
         case 5: return this.p5;
         case 6: return this.p6;
-        default : return null;
+        default : return new Point(0,0);
     }
   }
 }
