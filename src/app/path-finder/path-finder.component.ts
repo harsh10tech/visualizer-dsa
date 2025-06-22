@@ -347,11 +347,11 @@ export class PathFinderComponent {
   }
   private setHexAsdestination(hex: HexagonCordinate): void {
     this.destinationHex = hex;
-    this.colorHexagon(hex, 'green');
+    this.colorHexagon(hex, 'rgba(141, 233, 36, 0.94)');
   }
   private setHexAsStart(hex: HexagonCordinate): void {
     this.startHex = hex;
-    this.colorHexagon(hex, 'red');
+    this.colorHexagon(hex, 'rgba(226, 62, 103, 0.99)');
   }
   public resetHex(hex: HTMLElement) {
     this.renderer.removeStyle(hex, 'background');
