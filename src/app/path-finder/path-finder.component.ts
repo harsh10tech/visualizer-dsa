@@ -15,8 +15,8 @@ import { Hexagon, typeOfTraffic } from '../models/shapes/hexagon';
   styleUrl: './path-finder.component.css',
 })
 export class PathFinderComponent {
-  private startHex: HexagonCordinate | null = null;
-  private destinationHex: HexagonCordinate | null = null;
+  private startHex: Hexagon | null = null;
+  private destinationHex: Hexagon | null = null;
   private radius: number = 5;
   private ROWS: number = 0;
   private COLS: number = 0;
@@ -26,7 +26,6 @@ export class PathFinderComponent {
   private centers: Array<Point>;
   private hexaCordinates: Array<HexagonCordinate>;
   private hexagons: Map<string, Hexagon>;
-  // private typeOfTraffic: string[] = ['red', 'orange', 'yellow', 'green'];
 
   @ViewChild('hexCanvas', { static: false })
   canvasEle!: ElementRef<HTMLCanvasElement>;
@@ -326,14 +325,20 @@ export class PathFinderComponent {
     const x = (event.clientX - canvasBox.left) * adjustX;
     const y = (event.clientY - canvasBox.top) * adjustY;
     console.log(x, y);
-    const hex = this.getHexaCordinates(new Point(x, y));
-    console.log(hex);
-    if (hex) {
-      this.startHex === null
-        ? this.setHexAsStart(hex)
-        : this.destinationHex === null
-        ? this.setHexAsdestination(hex)
-        : console.log('Already selected!!');
+    const hexCord = this.getHexaCordinates(new Point(x, y));
+
+    console.log(hexCord);
+    if (hexCord) {
+      const hexaCenter = Hexagon.getHexagonCenter(hexCord);
+      const hexa =
+        hexaCenter != null ? this.hexagons.get(hexaCenter?.asKey()) : null;
+      if (hexa) {
+        this.startHex === null
+          ? this.setHexAsStart(hexa)
+          : this.destinationHex === null
+          ? this.setHexAsdestination(hexa)
+          : console.log('Already selected!!');
+      }
     }
   }
 
@@ -345,13 +350,13 @@ export class PathFinderComponent {
       this.startHex = null;
     }
   }
-  private setHexAsdestination(hex: HexagonCordinate): void {
+  private setHexAsdestination(hex: Hexagon): void {
     this.destinationHex = hex;
-    this.colorHexagon(hex, 'rgba(141, 233, 36, 0.94)');
+    this.colorHexagon(hex.cordidates, 'rgba(141, 233, 36, 0.94)');
   }
-  private setHexAsStart(hex: HexagonCordinate): void {
+  private setHexAsStart(hex: Hexagon): void {
     this.startHex = hex;
-    this.colorHexagon(hex, 'rgba(226, 62, 103, 0.99)');
+    this.colorHexagon(hex.cordidates, 'rgba(226, 62, 103, 0.99)');
   }
   public resetHex(hex: HTMLElement) {
     this.renderer.removeStyle(hex, 'background');
