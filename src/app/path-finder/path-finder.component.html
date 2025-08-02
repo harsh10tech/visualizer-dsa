@@ -1,5 +1,14 @@
 <div class="main">
   <div class="hexContainer">
-    <canvas #hexCanvas (click)="onHexClick($event)" width="500" height="600"></canvas>
+    <canvas
+      #hexCanvas
+      (click)="onHexClick($event)"
+      width="500"
+      height="600"
+    ></canvas>
+  </div>
+  <div>
+    <button (click)="findPath()">Generate Path</button>
+    <button (click)="findPathRadius()">Generate Path with radius</button>
   </div>
 </div>

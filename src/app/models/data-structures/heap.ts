@@ -12,7 +12,7 @@ export class Heap<T> {
       this.heapSize = 1;
     }
     this.compare = compare;
-    this.buildHeap;
+    this.buildHeap();
   }
 
   private buildHeap(): void {
@@ -60,6 +60,12 @@ export class Heap<T> {
     return this.heapSize > 0 ? this.heap[0] : -1;
   }
 
+  public push(node : T):void{
+    this.heap.push(node);
+    this.heapSize++;
+    this.__shiftUp(this.heapSize-1)
+  }
+
   public pop(): any {
     const top = this.heap[0];
     this.__swap(0, this.heapSize - 1);
@@ -72,6 +78,10 @@ export class Heap<T> {
   public Length = (): number => {
     return this.heapSize;
   };
+  
+  public isEmpty():boolean{
+    return this.heapSize === 0;
+  }
 
   private __swap(i: number, j: number) {
     const temp = this.heap[i];
