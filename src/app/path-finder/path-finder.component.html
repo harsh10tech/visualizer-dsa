@@ -7,14 +7,31 @@
       width="550"
       height="650"
     ></canvas>
+    <div class="camera-container">
+      <button class="camera-btn" (click)="captureCanvas()">
+        <div class="camera-top"></div>
+        <div class="lens"></div></button>
+    </div>
   </div>
   <div class="controls">
-    <button class="retro-btn" (click)="findPath()">Generate Path</button>
-    <button class="retro-btn" (click)="findPathRadius()">Generate Path with radius</button>
+    <button class="retro-btn" (click)="findPath()" [disabled]="!path">Generate Path</button>
+    <button class="retro-btn" (click)="findPathRadius()" [disabled]="!pathWithRadius">Generate Path with radius</button>
     <button class="retro-btn" (click)="resetCanvasKeepTraffic()">Reset</button>
     <label class="toggle-vert" title="Reset start/destination">
       <input type="checkbox" [(ngModel)]="resetSelections" />
       <span class="slider-vert"></span>
     </label>
+    <div class="captures" *ngIf="captures.length">
+      <div class="cap-list">
+        <img *ngFor="let cap of captures" [src]="cap" (click)="openPreview(cap)" />
+      </div>
+    </div>
+  </div>
+  <div class="preview-overlay" *ngIf="selectedCapture" (click)="closePreview()">
+    <div class="preview" (click)="$event.stopPropagation()">
+      <img [src]="selectedCapture!" />
+      <button class="clone-btn" (click)="cloneSelected()">Clone</button>
+      <button class="close-btn" (click)="closePreview()">×</button>
+    </div>
   </div>
 </div>

@@ -6,13 +6,22 @@
 
 .hexContainer {
   margin: 20px auto;
-  padding: 20px;
+  padding: 18px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   display: inline-block;
   box-shadow: 0 8px 32px rgba(141, 233, 36, 0.3);
+}
+
+.camera-container {
+width: 20px;
+height: 25px;
+position:absolute;
+left:99;
+right:0;
+top:0;
 }
 
 #hexCanvas {
@@ -54,6 +63,16 @@
   cursor: pointer;
   transition: transform 0.05s ease-in-out;
 }
+.retro-btn:disabled {
+  background: #ccc;          
+  border-color: #888;        
+  color: #666;               
+  cursor: not-allowed;       
+  box-shadow: 0 0 0 2px #d1cb9f, 4px 4px 0 0 #333;
+  opacity: 0.7;
+  transform: none;          
+}
+
 
 .retro-btn:active {
   transform: translate(2px, 2px);
@@ -107,4 +126,128 @@
 
 .toggle-vert input:checked + .slider-vert:before {
   transform: translateY(20px);
+}
+
+/* Captures panel */
+.captures {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 2px solid #333;
+  background: #fffdf2;
+  box-shadow: 0 0 0 2px #fffdf2, 3px 3px 0 0 #333;
+  border-radius: 8px;
+}
+
+.cap-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cap-list img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 2px solid #333;
+  box-shadow: 2px 2px 0 0 #333;
+  cursor: pointer;
+}
+
+
+/* Preview overlay */
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(156, 151, 151, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.preview {
+  position: relative;
+  background: #ebc036;
+  padding: 10px;
+  border: 2px solid #807878;
+  box-shadow: 0 0 0 2px #bb8080, 4px 4px 0 0 #333;
+}
+
+.preview img {
+  max-width: 80vw;
+  max-height: 80vh;
+  display: block;
+}
+
+.clone-btn,
+.close-btn {
+  position: absolute;
+  top: 8px;
+  padding: 6px 10px;
+  border: 2px solid #333;
+  background: #f7e26b;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clone-btn { right: 48px; }
+.close-btn { right: 8px; }
+
+.camera-btn {
+  position: relative;
+  width: 35px;
+  height: 22px;
+  border-radius: 15%;
+  border: 2px solid #333;
+  background-image: radial-gradient(circle at center, transparent 30%, #3b3838 31%);
+  box-shadow: 0 4px 0 #72716d, 0 6px 12px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-family:sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.camera-top {
+  width: 10px;
+  height: 2px;
+  border-radius: 30%;
+  position: absolute;
+  background: #3b3838;
+  top: -9px;
+  left: 10%;
+  right :20%;
+  border: 2px solid #3b3838;
+}
+
+.camera-btn:hover:not(:disabled) {
+  background: radial-gradient(circle at center, transparent 30%, #3b3838 40%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #72716d, 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.camera-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #bfa200, 0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* Camera Lens in Center */
+.camera-btn .lens {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, transparent 20%, #000 80%);
+  box-shadow: inset -2px -2px 4px rgba(255,255,255,0.2);
+}
+
+/* Disabled State */
+.camera-btn:disabled {
+  background: #999;
+  border-color: #777;
+  box-shadow: inset 2px 2px 4px #555;
+  cursor: not-allowed;
 }

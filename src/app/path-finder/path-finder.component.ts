@@ -30,6 +30,10 @@ export class PathFinderComponent {
   private hexagons: Map<string, Hexagon>;
   private traffic: Array<[Point, Point, string]> = new Array<[Point, Point, string]>();
   public resetSelections: boolean = false;
+  public path:boolean = true;
+  public pathWithRadius = true;
+  public captures: string[] = [];
+  public selectedCapture: string | null = null;
 
   @ViewChild('hexCanvas', { static: false })
   canvasEle!: ElementRef<HTMLCanvasElement>;
@@ -232,6 +236,9 @@ export class PathFinderComponent {
   public resetCanvasKeepTraffic(): void {
     if (!this.canvas || !this.cntx) return;
 
+    this.path = true;
+    this.pathWithRadius = true;
+
     this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let row = 0; row < this.ROWS; row++) {
       for (let col = 0; col < this.COLS; col++) {
@@ -406,6 +413,7 @@ export class PathFinderComponent {
   ) => a[1] < b[1];
 
   public async findPath(): Promise<void> {
+    this.pathWithRadius = false;
     var dist: Map<string, number> = new Map();
     var parent: Map<string, string> = new Map();
     var pq = new Heap<[string, number]>(undefined, this.comp);
@@ -430,7 +438,6 @@ export class PathFinderComponent {
       if (currDestDis && dis > currDestDis) break;
       const hexagon = this.hexagons.get(currCenter);
       if (!hexagon) return;
-      // this.colorHexagon(hexagon.cordidates, 'rgba(204, 189, 193, 0.99)');
       for (let i = 0; i < 6; i++) {
         const neighbor = hexagon.neighbors[i];
         if (!neighbor || !neighbor.visit) continue;
@@ -491,6 +498,7 @@ export class PathFinderComponent {
   }
 
   public async findPathRadius(): Promise<void> {
+    this.path = false;
     var dist: Map<string, number> = new Map();
     var parent: Map<string, string> = new Map();
     var pq = new Heap<[string, number, number]>(undefined, this.comprad);
@@ -579,4 +587,33 @@ export class PathFinderComponent {
   }
 
   //#endregion
+
+  // #region Screen capture helpers
+  public captureCanvas(): void {
+    if (!this.canvas) return;
+    try {
+      const url = this.canvas.toDataURL('image/png');
+      this.captures.unshift(url);
+    } catch (e) {
+      console.error('Capture failed', e);
+    }
+  }
+
+  public openPreview(url: string): void {
+    this.selectedCapture = url;
+  }
+
+  public closePreview(): void {
+    this.selectedCapture = null;
+  }
+
+  public cloneSelected(): void {
+    if (!this.selectedCapture) return;
+    // Open in a new tab for easy save/clone
+    const win = window.open();
+    if (win) {
+      win.document.write('<iframe src="' + this.selectedCapture + '" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%; position:fixed;"></iframe>');
+    }
+  }
+  // #endregion
 }
