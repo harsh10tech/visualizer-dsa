@@ -413,7 +413,7 @@ export class PathFinderComponent {
           parent.set(neighborCenter, currCenter);
         }
         if (neighborCenter != destinationHexCenter) {
-          await this.sleep(250);
+          await this.sleep(50);
           this.colorHexagon(neighbor.cordidates, 'rgba(191, 220, 221, 0.14)');
         }
         neighbor.visit = false;
