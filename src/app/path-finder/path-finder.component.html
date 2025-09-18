@@ -4,13 +4,17 @@
       id ="hexCanvas"
       #hexCanvas
       (click)="onHexClick($event)"
-      width="500"
-      height="600"
+      width="550"
+      height="650"
     ></canvas>
   </div>
   <div class="controls">
     <button class="retro-btn" (click)="findPath()">Generate Path</button>
     <button class="retro-btn" (click)="findPathRadius()">Generate Path with radius</button>
     <button class="retro-btn" (click)="resetCanvasKeepTraffic()">Reset</button>
+    <label class="toggle-vert" title="Reset start/destination">
+      <input type="checkbox" [(ngModel)]="resetSelections" />
+      <span class="slider-vert"></span>
+    </label>
   </div>
 </div>

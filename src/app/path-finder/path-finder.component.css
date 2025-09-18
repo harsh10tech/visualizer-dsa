@@ -18,7 +18,7 @@
 #hexCanvas {
   display: block;
   background: radial-gradient(
-      ellipse at center,
+      circle at center,
       rgba(255, 255, 220, 0.9) 0%,
       rgba(255, 240, 200, 0.8) 60%,
       rgba(255, 220, 180, 0.7) 100%
@@ -62,4 +62,49 @@
 
 .retro-btn:hover {
   filter: brightness(1.05);
+}
+
+/* Vertical circular toggle placed next to Reset */
+.toggle-vert {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 44px;
+  border: 2px solid #333;
+  background: #c8c8c8;
+  border-radius: 16px;
+  box-shadow: 0 0 0 2px #c8c8c8, 2px 2px 0 0 #333;
+  cursor: pointer;
+}
+
+.toggle-vert input {
+  display: none;
+}
+
+.slider-vert {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+}
+
+.slider-vert:before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 50%;
+  box-shadow: 1px 1px 0 0 #333;
+  transition: transform 0.16s ease-in-out;
+}
+
+.toggle-vert input:checked + .slider-vert {
+  background: #9be564;
+}
+
+.toggle-vert input:checked + .slider-vert:before {
+  transform: translateY(20px);
 }

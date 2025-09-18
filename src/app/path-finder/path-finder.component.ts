@@ -29,6 +29,7 @@ export class PathFinderComponent {
   private hexaCordinates: Array<HexagonCordinate>;
   private hexagons: Map<string, Hexagon>;
   private traffic: Array<[Point, Point, string]> = new Array<[Point, Point, string]>();
+  public resetSelections: boolean = false;
 
   @ViewChild('hexCanvas', { static: false })
   canvasEle!: ElementRef<HTMLCanvasElement>;
@@ -36,22 +37,22 @@ export class PathFinderComponent {
   private canvas!: HTMLCanvasElement;
 
   public ngOnInit(): void {
-    this.HEX_SIZE = 15;
+    this.HEX_SIZE = 18.25;
     this.HEX_WIDTH = this.HEX_SIZE * 2;
     this.HEX_HEIGHT = this.HEX_SIZE * Math.sqrt(3);
-    constants.HEX_SIZE = 15;
+    constants.HEX_SIZE = 18.25;
     constants.HEX_WIDTH = constants.HEX_SIZE * 2;
     constants.HEX_HEIGHT = constants.HEX_SIZE * Math.sqrt(3);
   }
 
   public ngAfterViewInit(): void {
-    this.canvas = this.canvasEle?.nativeElement;
+    this.canvas = this.canvasEle.nativeElement;
     const cntx = this.canvas?.getContext('2d');
     if (cntx) {
       this.cntx = cntx;
       console.log('Drawing on Canvas!!');
-      this.ROWS = this.canvas.height / 28;
-      this.COLS = this.canvas.width / 24;
+      this.ROWS = this.canvas.height / 35;
+      this.COLS = this.canvas.clientWidth / 29;
       this.drawOnCanvas();
     } else {
       console.log('Canvas is falling!!');
@@ -251,9 +252,15 @@ export class PathFinderComponent {
     this.traffic.forEach((traffic) => {
       this.colorTraffic(traffic[0], traffic[1], traffic[2]);
     });
-    if (this.startHex) this.colorHexagon(this.startHex.cordidates, 'rgba(226, 62, 103, 0.99)');
-    if (this.destinationHex)
-      this.colorHexagon(this.destinationHex.cordidates, 'rgba(141, 233, 36, 0.94)');
+    if (this.resetSelections) {
+      this.startHex = null;
+      this.destinationHex = null;
+    } else {
+      if (this.startHex)
+        this.colorHexagon(this.startHex.cordidates, 'rgba(226, 62, 103, 0.99)');
+      if (this.destinationHex)
+        this.colorHexagon(this.destinationHex.cordidates, 'rgba(141, 233, 36, 0.94)');
+    }
   }
 
   //#region Old One
