@@ -8,6 +8,8 @@ import {
 import { Point } from '../models/cordinates/Points/point';
 import { HexagonCordinate } from '../models/cordinates/hexagon/hexagon-cordinate';
 import { Hexagon, typeOfTraffic } from '../models/shapes/hexagon';
+import { PathFinderConstants as constants } from '../constants/path-finder-constants';
+import { Heap } from '../models/data-structures/heap';
 
 @Component({
   selector: 'app-path-finder',
@@ -15,8 +17,8 @@ import { Hexagon, typeOfTraffic } from '../models/shapes/hexagon';
   styleUrl: './path-finder.component.css',
 })
 export class PathFinderComponent {
-  private startHex: HexagonCordinate | null = null;
-  private destinationHex: HexagonCordinate | null = null;
+  private startHex: Hexagon | null = null;
+  private destinationHex: Hexagon | null = null;
   private radius: number = 5;
   private ROWS: number = 0;
   private COLS: number = 0;
@@ -26,7 +28,12 @@ export class PathFinderComponent {
   private centers: Array<Point>;
   private hexaCordinates: Array<HexagonCordinate>;
   private hexagons: Map<string, Hexagon>;
-  // private typeOfTraffic: string[] = ['red', 'orange', 'yellow', 'green'];
+  private traffic: Array<[Point, Point, string]> = new Array<[Point, Point, string]>();
+  public resetSelections: boolean = false;
+  public path:boolean = true;
+  public pathWithRadius = true;
+  public captures: string[] = [];
+  public selectedCapture: string | null = null;
 
   @ViewChild('hexCanvas', { static: false })
   canvasEle!: ElementRef<HTMLCanvasElement>;
@@ -34,19 +41,22 @@ export class PathFinderComponent {
   private canvas!: HTMLCanvasElement;
 
   public ngOnInit(): void {
-    this.HEX_SIZE = 15;
+    this.HEX_SIZE = 18.25;
     this.HEX_WIDTH = this.HEX_SIZE * 2;
     this.HEX_HEIGHT = this.HEX_SIZE * Math.sqrt(3);
+    constants.HEX_SIZE = 18.25;
+    constants.HEX_WIDTH = constants.HEX_SIZE * 2;
+    constants.HEX_HEIGHT = constants.HEX_SIZE * Math.sqrt(3);
   }
 
   public ngAfterViewInit(): void {
-    this.canvas = this.canvasEle?.nativeElement;
+    this.canvas = this.canvasEle.nativeElement;
     const cntx = this.canvas?.getContext('2d');
     if (cntx) {
       this.cntx = cntx;
       console.log('Drawing on Canvas!!');
-      this.ROWS = this.canvas.height / 28;
-      this.COLS = this.canvas.width / 24;
+      this.ROWS = this.canvas.height / 35;
+      this.COLS = this.canvas.clientWidth / 29;
       this.drawOnCanvas();
     } else {
       console.log('Canvas is falling!!');
@@ -68,9 +78,9 @@ export class PathFinderComponent {
   private getHexCenter(row: number, col: number): Point {
     const x = col * this.HEX_WIDTH * 0.75 + this.HEX_SIZE + 10;
     const y =
-      row * this.HEX_HEIGHT +
-      (col % 2) * this.HEX_HEIGHT * 0.5 +
-      this.HEX_SIZE +
+      row * constants.HEX_HEIGHT +
+      (col % 2) * constants.HEX_HEIGHT * 0.5 +
+      constants.HEX_SIZE +
       10;
     return new Point(x, y);
   }
@@ -128,6 +138,7 @@ export class PathFinderComponent {
     }
     this.populateNeighbors();
     console.log(
+      'Details: ',
       Math.floor(this.ROWS) * Math.floor(this.COLS),
       this.hexaCordinates.length,
       this.centers.length
@@ -140,19 +151,9 @@ export class PathFinderComponent {
       const px = currCenter.x + Math.sqrt(3) * this.HEX_SIZE * Math.cos(angle);
       const py = currCenter.y + Math.sqrt(3) * this.HEX_SIZE * Math.sin(angle);
       const newPoint = new Point(px, py);
-      // const hex = this.getHexaCordinates(newPoint);
-      // if(hex){
-      //   const newHex = this.getCenter(hex);
-      //   if(newHex)console.log(newHex.x-newPoint.x , newHex.y-newPoint.y);
-      // }
-      // console.log(newPoint);
       const neighbor = this.hexagons.get(newPoint.asKey());
       const current = this.hexagons.get(currCenter.asKey());
-      // console.log("neighbor");
-      // console.log(neighbor,current);
-      // console.log("be")
       if (neighbor && current) {
-        // if(hex)this.colorHexagon(hex,'blue');
         current.neighbors[i] = neighbor;
       }
     }
@@ -200,6 +201,8 @@ export class PathFinderComponent {
                 next.cordidates.getCord(((i + 9) % 6) + 1),
                 traffic
               );
+              this.traffic.push([current.cordidates.getCord(i + 1), current.cordidates.getCord((i + 2) % 6), traffic]);
+              this.traffic.push([current.cordidates.getCord(((i + 3) % 6) + 1), current.cordidates.getCord(((i + 9) % 6) + 1), traffic]);
             }
           }
         }
@@ -228,6 +231,43 @@ export class PathFinderComponent {
     this.cntx.strokeStyle = color;
     this.cntx.lineWidth = 3;
     this.cntx.stroke();
+  }
+
+  public resetCanvasKeepTraffic(): void {
+    if (!this.canvas || !this.cntx) return;
+
+    this.path = true;
+    this.pathWithRadius = true;
+
+    this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let row = 0; row < this.ROWS; row++) {
+      for (let col = 0; col < this.COLS; col++) {
+        const center = this.getHexCenter(row, col);
+        const hexCordinate = this.drawHexagon(
+          center.x,
+          center.y,
+          this.HEX_SIZE - 1,
+          1
+        );
+        const hexagon = this.hexagons.get(center.asKey());
+        if (hexagon) {
+          hexagon.visit = true;
+        }
+      }
+    }
+
+    this.traffic.forEach((traffic) => {
+      this.colorTraffic(traffic[0], traffic[1], traffic[2]);
+    });
+    if (this.resetSelections) {
+      this.startHex = null;
+      this.destinationHex = null;
+    } else {
+      if (this.startHex)
+        this.colorHexagon(this.startHex.cordidates, 'rgba(226, 62, 103, 0.99)');
+      if (this.destinationHex)
+        this.colorHexagon(this.destinationHex.cordidates, 'rgba(141, 233, 36, 0.94)');
+    }
   }
 
   //#region Old One
@@ -274,6 +314,7 @@ export class PathFinderComponent {
       });
     }
   }
+
   @HostListener('mouseleave', ['$event.target'])
   resetHover(target: HTMLElement): void {
     const allHexagons =
@@ -318,7 +359,8 @@ export class PathFinderComponent {
     }
     return null;
   }
-  onHexClick(event: MouseEvent): void {
+
+  public onHexClick(event: MouseEvent): void {
     const canvasBox = this.canvas.getBoundingClientRect();
     const adjustX = this.canvas.width / canvasBox.width;
     const adjustY = this.canvas.height / canvasBox.height;
@@ -326,36 +368,258 @@ export class PathFinderComponent {
     const x = (event.clientX - canvasBox.left) * adjustX;
     const y = (event.clientY - canvasBox.top) * adjustY;
     console.log(x, y);
-    const hex = this.getHexaCordinates(new Point(x, y));
-    console.log(hex);
-    if (hex) {
-      this.startHex === null
-        ? this.setHexAsStart(hex)
-        : this.destinationHex === null
-        ? this.setHexAsdestination(hex)
-        : console.log('Already selected!!');
+    const hexCord = this.getHexaCordinates(new Point(x, y));
+
+    console.log(hexCord);
+    if (hexCord) {
+      const hexaCenter = Hexagon.getHexagonCenter(hexCord);
+      const hexa =
+        hexaCenter != null ? this.hexagons.get(hexaCenter?.asKey()) : null;
+      if (hexa) {
+        this.startHex === null
+          ? this.setHexAsStart(hexa)
+          : this.destinationHex === null
+          ? this.setHexAsdestination(hexa)
+          : console.log('Already selected!!');
+      }
     }
   }
 
   onHexHover(event: Event): void {}
 
-  private resetAllHexagons() {
-    if (this.startHex) {
-      // this.resetHex(this.startHex);
-      this.startHex = null;
-    }
+  public resetAllHexagons(): void{
+    // this.startHex = null;
+    // this.destinationHex = null;
+    // this.drawOnCanvas();
   }
-  private setHexAsdestination(hex: HexagonCordinate): void {
+  private setHexAsdestination(hex: Hexagon): void {
     this.destinationHex = hex;
-    this.colorHexagon(hex, 'green');
+    this.colorHexagon(hex.cordidates, 'rgba(141, 233, 36, 0.94)');
   }
-  private setHexAsStart(hex: HexagonCordinate): void {
+  private setHexAsStart(hex: Hexagon): void {
     this.startHex = hex;
-    this.colorHexagon(hex, 'red');
+    this.colorHexagon(hex.cordidates, 'rgba(226, 62, 103, 0.99)');
   }
   public resetHex(hex: HTMLElement) {
     this.renderer.removeStyle(hex, 'background');
     this.renderer.setProperty(hex, 'innerText', '');
   }
   //#endregion
+
+  //#region path calculation
+  private comp: (a: [string, number], b: [string, number]) => boolean = (
+    a,
+    b
+  ) => a[1] < b[1];
+
+  public async findPath(): Promise<void> {
+    this.pathWithRadius = false;
+    var dist: Map<string, number> = new Map();
+    var parent: Map<string, string> = new Map();
+    var pq = new Heap<[string, number]>(undefined, this.comp);
+    let destinationHexCenter: string;
+    this.centers.forEach((c) => {
+      dist.set(c.asKey(), Infinity);
+      parent.set(c.asKey(), c.asKey());
+    });
+    if (this.startHex && this.destinationHex) {
+      dist.set(this.startHex.center.asKey(), 0);
+      pq.push([this.startHex.center.asKey(), 0]);
+      destinationHexCenter = this.destinationHex.center.asKey();
+    } else return;
+
+    while (!pq.isEmpty()) {
+      const node = pq.top();
+      const currCenter = node[0];
+      const dis = node[1];
+      if (dis === -1) return;
+      pq.pop();
+      const currDestDis = dist.get(destinationHexCenter);
+      if (currDestDis && dis > currDestDis) break;
+      const hexagon = this.hexagons.get(currCenter);
+      if (!hexagon) return;
+      for (let i = 0; i < 6; i++) {
+        const neighbor = hexagon.neighbors[i];
+        if (!neighbor || !neighbor.visit) continue;
+        const neighborTraffic = hexagon.traffic[i];
+        const neighborCenter = neighbor.center.asKey();
+        if (neighborCenter != destinationHexCenter)
+          this.colorHexagon(neighbor.cordidates, 'rgba(210, 233, 127, 0.44)');
+        const trafficWeight =
+          neighborTraffic === typeOfTraffic[3]
+            ? Infinity
+            : typeOfTraffic[neighborTraffic as keyof typeof typeOfTraffic] + 1;
+
+        const currDis = dist.get(neighborCenter);
+        if (currDis && dis + trafficWeight < currDis) {
+          dist.set(neighborCenter, dis + trafficWeight);
+          pq.push([neighborCenter, dis + trafficWeight]);
+          parent.set(neighborCenter, currCenter);
+        }
+        if (neighborCenter != destinationHexCenter) {
+          await this.sleep(50);
+          this.colorHexagon(neighbor.cordidates, 'rgba(191, 220, 221, 0.14)');
+        }
+        neighbor.visit = false;
+      }
+      // this.colorHexagon(hexagon.cordidates, 'white');
+      hexagon.visit = false;
+    }
+    this.colorHexagon(this.destinationHex.cordidates, 'green');
+    if (
+      !dist.get(destinationHexCenter) ||
+      dist.get(destinationHexCenter) === Infinity
+    ) {
+      console.log('Path not possible');
+      return;
+    }
+    var path: Array<Hexagon> = [];
+    var tempNode = destinationHexCenter;
+    while (parent.get(tempNode) != tempNode) {
+      const tempHex = this.hexagons.get(tempNode);
+      if (!tempHex) return;
+      path.push(tempHex);
+      tempNode = parent.get(tempHex.center.asKey()) ?? '';
+    }
+    path.reverse();
+    path.pop();
+    path.forEach((p) =>
+      this.colorHexagon(p.cordidates, 'rgba(106, 233, 178, 0.99)')
+    );
+  }
+
+  private comprad: (
+    a: [string, number, number],
+    b: [string, number, number]
+  ) => boolean = (a, b) => a[1] < b[1] || (a[1] === b[1] && a[2] < b[2]);
+
+  private getManhattanDistance(source: Point, target: Point): number {
+    return Math.abs(source.x - target.x) + Math.abs(source.y - target.y);
+  }
+
+  public async findPathRadius(): Promise<void> {
+    this.path = false;
+    var dist: Map<string, number> = new Map();
+    var parent: Map<string, string> = new Map();
+    var pq = new Heap<[string, number, number]>(undefined, this.comprad);
+    let destinationHexCenter: string;
+    this.centers.forEach((c) => {
+      dist.set(c.asKey(), Infinity);
+      parent.set(c.asKey(), c.asKey());
+    });
+    if (this.startHex && this.destinationHex) {
+      dist.set(this.startHex.center.asKey(), 0);
+      pq.push([
+        this.startHex.center.asKey(),
+        0,
+        this.getManhattanDistance(this.startHex.center, this.destinationHex.center),
+      ]);
+      destinationHexCenter = this.destinationHex.center.asKey();
+    } else return;
+
+    while (!pq.isEmpty()) {
+      const node = pq.top();
+      const currCenter = node[0];
+      const dis = node[1];
+      if (dis === -1) return;
+      pq.pop();
+      const currDestDis = dist.get(destinationHexCenter);
+      if (currDestDis && dis > currDestDis) break;
+      const hexagon = this.hexagons.get(currCenter);
+      if (!hexagon) return;
+      // this.colorHexagon(hexagon.cordidates, 'rgba(204, 189, 193, 0.99)');
+      for (let i = 0; i < 6; i++) {
+        const neighbor = hexagon.neighbors[i];
+        if (!neighbor || !neighbor.visit) continue;
+        const neighborTraffic = hexagon.traffic[i];
+        const neighborCenter = neighbor.center.asKey();
+        if (neighborCenter != destinationHexCenter)
+          this.colorHexagon(neighbor.cordidates, 'rgba(119, 233, 66, 0.12)');
+        const trafficWeight =
+          neighborTraffic === typeOfTraffic[3]
+            ? Infinity
+            : typeOfTraffic[neighborTraffic as keyof typeof typeOfTraffic] + 1;
+
+        const currDis = dist.get(neighborCenter);
+        if (currDis && dis + trafficWeight < currDis) {
+          dist.set(neighborCenter, dis + trafficWeight);
+          pq.push([
+            neighborCenter,
+            dis + trafficWeight,
+            this.getManhattanDistance(neighbor.center, this.destinationHex.center),
+          ]);
+          parent.set(neighborCenter, currCenter);
+        }
+        if (neighborCenter != destinationHexCenter) {
+          await this.sleep(50);
+          this.colorHexagon(neighbor.cordidates, 'rgba(191, 220, 221, 0.14)');
+        }
+        neighbor.visit = false;
+      }
+      // this.colorHexagon(hexagon.cordidates, 'white');
+      hexagon.visit = false;
+    }
+    this.colorHexagon(this.destinationHex.cordidates, 'green');
+    if (
+      !dist.get(destinationHexCenter) ||
+      dist.get(destinationHexCenter) === Infinity
+    ) {
+      console.log('Path not possible');
+      return;
+    }
+    var path: Array<Hexagon> = [];
+    var tempNode = destinationHexCenter;
+    while (parent.get(tempNode) != tempNode) {
+      const tempHex = this.hexagons.get(tempNode);
+      if (!tempHex) return;
+      path.push(tempHex);
+      tempNode = parent.get(tempHex.center.asKey()) ?? '';
+    }
+    path.reverse();
+    path.pop();
+    path.forEach((p) =>
+      this.colorHexagon(p.cordidates, 'rgba(50, 53, 241, 0.51)')
+    );
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  //#endregion
+
+  // #region Screen capture helpers
+  public captureCanvas(): void {
+    if (!this.canvas) return;
+    try {
+      const url = this.canvas.toDataURL('image/png');
+      this.captures.unshift(url);
+    } catch (e) {
+      console.error('Capture failed', e);
+    }
+  }
+
+  public openPreview(url: string): void {
+    this.selectedCapture = url;
+  }
+
+  public closePreview(): void {
+    this.selectedCapture = null;
+    this.showThumbnails = false;
+  }
+
+  public cloneSelected(): void {
+    if (!this.selectedCapture) return;
+    // Open in a new tab for easy save/clone
+    const win = window.open();
+    if (win) {
+      win.document.write('<iframe src="' + this.selectedCapture + '" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%; position:fixed;"></iframe>');
+    }
+  }
+  // #endregion
+  showThumbnails = false;
+
+  toggleThumbnails(state: boolean) {
+    this.showThumbnails = state;
+  }
 }

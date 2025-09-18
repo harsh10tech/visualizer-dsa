@@ -1,0 +1,15 @@
+.app-title {
+  margin: 16px auto 8px;
+  padding: 8px 18px;
+  background: #6be7f757;
+  border: 2px solid #333;
+  box-shadow: 0 0 0 2px #f7e26b, 4px 4px 0 0 #333;
+  color: #111;
+  font-weight: 800;
+  font-family: 'Courier New', Courier, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  width: max-content;
+  align-items: center;
+}
+
