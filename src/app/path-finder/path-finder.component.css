@@ -1,29 +1,7 @@
 .main {
   display: flex;
-  --s: 30px; /* size  */
-  --m: 1px; /* margin */
-  --f: calc(1.732 * var(--s) + 4 * var(--m) - 1px);
-}
-
-.container {
-  font-size: 0; /*disable white space between inline block element */
-  text-align: center;
-}
-
-.container div {
-  width: var(--s);
-  margin: var(--m);
-  height: calc(var(--s) * 1.1547);
-  display: inline-block;
-  font-size: initial;
-  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-  background: rgb(0, 166, 255);
-  margin-bottom: calc(var(--m) - var(--s) * 0.2885);
-  transition: backgroung-color 0.4s ease, opacity 0.4s ease;
-  text-align: center;
-  line-height: calc(var(--s) * 1.1547);
-  color: white;
-  font-weight: bold;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hexContainer {
@@ -38,47 +16,50 @@
 }
 
 #hexCanvas {
-  background: transparent;
-  border-radius: 15px;
+  display: block;
+  background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 220, 0.9) 0%,
+      rgba(255, 240, 200, 0.8) 60%,
+      rgba(255, 220, 180, 0.7) 100%
+    ),
+    #ebc036;
+  border: 3px solid rgba(37, 32, 4, 0.4);
+  border-radius: 12px;
+  box-shadow: inset 0 0 10px rgba(214, 177, 0, 0.25),
+              0 0 20px rgba(141, 233, 36, 0.25),
+              0 0 35px rgba(255, 200, 200, 0.3);
+  image-resolution: 300dpi;
 }
-/* #hexCanvas div {
-  width: var(--s);
-  margin: var(--m);
-  height: calc(var(--s) * 1.1547);
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px auto 0;
+}
+
+.retro-btn {
+  position: relative;
   display: inline-block;
-  font-size: initial;
-  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-  background: rgb(0, 166, 255);
-  margin-bottom: calc(var(--m) - var(--s) * 0.2885);
-  transition: backgroung-color 0.4s ease, opacity 0.4s ease;
-  text-align: center;
-  line-height: calc(var(--s) * 1.1547);
-  color: white;
-  font-weight: bold;
-} */
-
-.container div:hover {
-  background: rgb(0, 140, 220);
+  padding: 10px 16px;
+  color: #111;
+  background: #f7e26b; /* classic retro yellow */
+  border: 2px solid #333;
+  box-shadow: 0 0 0 2px #f7e26b, 4px 4px 0 0 #333;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: transform 0.05s ease-in-out;
 }
 
-.fade {
-  opacity: 0.3;
+.retro-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 2px #f7e26b, 2px 2px 0 0 #333;
 }
 
-.container div.active {
-  opacity: 1;
-}
-
-.container div:nth-child(odd) {
-  background: rgb(83, 151, 183);
-}
-.container::before {
-  content: "";
-  width: calc(var(--s) / 2 + var(--m));
-  float: left;
-  height: 120%;
-  shape-outside: repeating-linear-gradient(
-    #0000 0 calc(var(--f) - 3px),
-    #000 0 var(--f)
-  );
+.retro-btn:hover {
+  filter: brightness(1.05);
 }

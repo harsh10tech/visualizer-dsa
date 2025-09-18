@@ -28,6 +28,7 @@ export class PathFinderComponent {
   private centers: Array<Point>;
   private hexaCordinates: Array<HexagonCordinate>;
   private hexagons: Map<string, Hexagon>;
+  private traffic: Array<[Point, Point, string]> = new Array<[Point, Point, string]>();
 
   @ViewChild('hexCanvas', { static: false })
   canvasEle!: ElementRef<HTMLCanvasElement>;
@@ -195,6 +196,8 @@ export class PathFinderComponent {
                 next.cordidates.getCord(((i + 9) % 6) + 1),
                 traffic
               );
+              this.traffic.push([current.cordidates.getCord(i + 1), current.cordidates.getCord((i + 2) % 6), traffic]);
+              this.traffic.push([current.cordidates.getCord(((i + 3) % 6) + 1), current.cordidates.getCord(((i + 9) % 6) + 1), traffic]);
             }
           }
         }
@@ -223,6 +226,34 @@ export class PathFinderComponent {
     this.cntx.strokeStyle = color;
     this.cntx.lineWidth = 3;
     this.cntx.stroke();
+  }
+
+  public resetCanvasKeepTraffic(): void {
+    if (!this.canvas || !this.cntx) return;
+
+    this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let row = 0; row < this.ROWS; row++) {
+      for (let col = 0; col < this.COLS; col++) {
+        const center = this.getHexCenter(row, col);
+        const hexCordinate = this.drawHexagon(
+          center.x,
+          center.y,
+          this.HEX_SIZE - 1,
+          1
+        );
+        const hexagon = this.hexagons.get(center.asKey());
+        if (hexagon) {
+          hexagon.visit = true;
+        }
+      }
+    }
+
+    this.traffic.forEach((traffic) => {
+      this.colorTraffic(traffic[0], traffic[1], traffic[2]);
+    });
+    if (this.startHex) this.colorHexagon(this.startHex.cordidates, 'rgba(226, 62, 103, 0.99)');
+    if (this.destinationHex)
+      this.colorHexagon(this.destinationHex.cordidates, 'rgba(141, 233, 36, 0.94)');
   }
 
   //#region Old One
@@ -342,11 +373,10 @@ export class PathFinderComponent {
 
   onHexHover(event: Event): void {}
 
-  private resetAllHexagons() {
-    if (this.startHex) {
-      // this.startHex = null;
-      // this.destinationHex = null;
-    }
+  public resetAllHexagons(): void{
+    // this.startHex = null;
+    // this.destinationHex = null;
+    // this.drawOnCanvas();
   }
   private setHexAsdestination(hex: Hexagon): void {
     this.destinationHex = hex;

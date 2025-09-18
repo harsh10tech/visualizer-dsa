@@ -1,14 +1,16 @@
 <div class="main">
   <div class="hexContainer">
     <canvas
+      id ="hexCanvas"
       #hexCanvas
       (click)="onHexClick($event)"
       width="500"
       height="600"
     ></canvas>
   </div>
-  <div>
-    <button (click)="findPath()">Generate Path</button>
-    <button (click)="findPathRadius()">Generate Path with radius</button>
+  <div class="controls">
+    <button class="retro-btn" (click)="findPath()">Generate Path</button>
+    <button class="retro-btn" (click)="findPathRadius()">Generate Path with radius</button>
+    <button class="retro-btn" (click)="resetCanvasKeepTraffic()">Reset</button>
   </div>
 </div>
