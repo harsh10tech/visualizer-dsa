@@ -21,9 +21,12 @@
       <input type="checkbox" [(ngModel)]="resetSelections" />
       <span class="slider-vert"></span>
     </label>
-    <div class="captures" *ngIf="captures.length">
-      <div class="cap-list">
-        <img *ngFor="let cap of captures" [src]="cap" (click)="openPreview(cap)" />
+    <div class="captures" *ngIf="captures.length" (mouseleave)="toggleThumbnails(false)">
+      <div class="gallery-icon"(mouseenter)="toggleThumbnails(true)"></div>
+      <div class="thumbnail-dock">
+        <div class="thumbnail" *ngFor="let cap of captures" (click)="openPreview(cap)">
+          <img  [src]="cap" alt="thumbnail"/>
+        </div>
       </div>
     </div>
   </div>

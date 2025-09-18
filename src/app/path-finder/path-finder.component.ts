@@ -605,6 +605,7 @@ export class PathFinderComponent {
 
   public closePreview(): void {
     this.selectedCapture = null;
+    this.showThumbnails = false;
   }
 
   public cloneSelected(): void {
@@ -616,4 +617,9 @@ export class PathFinderComponent {
     }
   }
   // #endregion
+  showThumbnails = false;
+
+  toggleThumbnails(state: boolean) {
+    this.showThumbnails = state;
+  }
 }
