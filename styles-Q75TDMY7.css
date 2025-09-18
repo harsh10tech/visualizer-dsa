@@ -1,0 +1,1 @@
+body:before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(to bottom,rgba(230,203,82,.432) 0px,rgba(240,209,38,.281) 2px,transparent 2px,transparent 4px);pointer-events:none}
