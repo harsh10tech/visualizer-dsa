@@ -82,3 +82,42 @@
     #000 0 var(--f)
   );
 }
+
+.button1 {
+  padding: 10px 15px;
+  border: none;
+  background-color: rgb(145, 130, 130);
+  /* color: white; */
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 166, 255, 0.3);
+   position: absolute;
+  top: 40%;
+  left: 70%;
+}
+.button1:hover {
+  background-color: rgb(202, 196, 196);     /* Changes the background to white */
+  color: rgb(145, 130, 130);   /* Optional: Changes text color to match original background */
+  box-shadow: 0 6px 14px rgba(94, 91, 91, 0.5);  /* Grayish shadow */
+}
+
+.button2 {
+  padding: 10px 15px;
+  border: none;
+   background-color: rgb(145, 130, 130);
+  /* color: white; */
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 166, 255, 0.3);
+   position: absolute;
+  top: 47%;
+  left: 70%;
+}
+
+
+
+

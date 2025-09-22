@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PathFinderComponent } from './path-finder/path-finder.component';
+import { FrontPageComponent } from './front-page/front-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PathFinderComponent
+    PathFinderComponent,
+    FrontPageComponent
   ],
   imports: [
     BrowserModule,
