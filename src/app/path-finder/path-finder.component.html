@@ -14,8 +14,10 @@
     </div>
   </div>
   <div class="controls">
-    <button class="retro-btn" (click)="findPath()" [disabled]="!path">Generate Path</button>
-    <button class="retro-btn" (click)="findPathRadius()" [disabled]="!pathWithRadius">Generate Path with radius</button>
+    <button class="retro-btn" (click)="findPath_Dijkstra()" [disabled]="disabledFlag()">Dijkstra's Algo</button>
+    <button class="retro-btn" (click)="findPath_ManhattanDist()" [disabled]="disabledFlag()">A* Manhattan</button>
+    <button class="retro-btn" (click)="findPath_ManhattanDist_Fast()" [disabled]="disabledFlag()">A* Manhattan + Traffic</button>
+    <button class="retro-btn" (click)="findPath_Chebyshev()" [disabled]="disabledFlag()">A* Chebyshev</button>
     <button class="retro-btn" (click)="resetCanvasKeepTraffic()">Reset</button>
     <label class="toggle-vert" title="Reset start/destination">
       <input type="checkbox" [(ngModel)]="resetSelections" />
