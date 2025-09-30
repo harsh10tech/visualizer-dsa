@@ -1,9 +1,35 @@
 .main {
+  display: grid;
+  flex-direction: column;
+  align-items: center;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 10px;
+}
+
+.main .right-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
+.main .right-panel .efforts-distance {
+  display: grid;
+  flex-direction: column;
+  gap: 30px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.instructions-panel{
+  display: flex;
+  gap: 10px;
+}
 .hexContainer {
   margin: 20px auto;
   padding: 18px;
@@ -43,6 +69,7 @@ top:0;
 
 .controls {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 12px;
@@ -73,6 +100,17 @@ top:0;
   transform: none;          
 }
 
+.retro-box {
+  position:relative;
+  display: inline-block;
+  /* display: block; */
+  background: #bbf29c;
+  border: 3px solid #333;
+  margin: 20px auto;
+  border: 2px solid #333;
+  box-shadow: 0 0 0 2px #f7e26b, 4px 4px 0 0 #333;
+  padding:10px
+}
 
 .retro-btn:active {
   transform: translate(2px, 2px);
@@ -152,7 +190,6 @@ top:0;
   box-shadow: 2px 2px 0 0 #333;
   cursor: pointer;
 }
-
 
 /* Preview overlay */
 .preview-overlay {

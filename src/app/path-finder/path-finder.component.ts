@@ -10,7 +10,7 @@ import { HexagonCordinate } from '../models/cordinates/hexagon/hexagon-cordinate
 import { Hexagon, typeOfTraffic } from '../models/shapes/hexagon';
 import { PathFinderConstants as constants } from '../constants/path-finder-constants';
 import { Heap } from '../models/data-structures/heap';
-import { getChebyshevDistance, getDistance, getHexCenter,getManhattanDistance,sleep } from '../helpers/path-finder-utils';
+import { getChebyshevDistance, getDistance, getHexCenter,getManhattanDistance,setDescription,sleep } from '../helpers/path-finder-utils';
 import { Comperators } from '../helpers/path-finder-utils';
 
 @Component({
@@ -39,6 +39,9 @@ export class PathFinderComponent {
   public captures: string[] = [];
   public selectedCapture: string | null = null;
   public showThumbnails:boolean = false;
+  public algorithmDescription: string = '';
+  public efforts: number = 0;
+  public distance: number = 0;
 
 
   @ViewChild('hexCanvas', { static: false })
@@ -235,6 +238,9 @@ export class PathFinderComponent {
     this.aStar_Manhattan_Flag = true;
     this.aStar_Manhattan_Plus_Flag = true;
     this.aStar_Chebyshev_Flag = true;
+    this.algorithmDescription = '';
+    this.efforts = 0;
+    this.distance = 0;
 
     this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let row = 0; row < this.ROWS; row++) {
@@ -376,6 +382,7 @@ export class PathFinderComponent {
   //#region Dijkstra's Algorithm
   public async findPath_Dijkstra(): Promise<void> {
     this.dijkstra_Flag = false;
+    this.algorithmDescription = setDescription(constants.DIJKSTRA);
     var dist: Map<string, number> = new Map();
     var parent: Map<string, string> = new Map();
     var pq = new Heap<[string, number]>(undefined, Comperators.comp);
@@ -456,12 +463,15 @@ export class PathFinderComponent {
       tempHex = p;
     });
     this.drawPathLine(tempHex.center, this.destinationHex.center);
+    this.distance = path.length;
+    this.efforts = dist.get(destinationHexCenter) ?? 0;
   }
   //#endregion
 
   // #region a-star with Manhattan Distance (Traffic weight considered)
   public async findPath_ManhattanDist(): Promise<void> {
     this.aStar_Manhattan_Flag = false;
+    this.algorithmDescription = setDescription(constants.MANHATTAN);
     var dist: Map<string, number> = new Map();
     var parent: Map<string, string> = new Map();
     var pq = new Heap<[string, number, number]>(undefined, Comperators.compManhattan_Traffic);
@@ -550,12 +560,15 @@ export class PathFinderComponent {
       tempHex = p;
     });
     this.drawPathLine(tempHex.center, this.destinationHex.center);
+    this.distance = path.length;
+    this.efforts = dist.get(destinationHexCenter) ?? 0;
   }
   //#endregion
 
   // #region a-star with Manhattan Distance and Fast (without traffic weight)
   public async findPath_ManhattanDist_Fast(): Promise<void> {
     this.aStar_Manhattan_Plus_Flag = false;
+    this.algorithmDescription = setDescription(constants.MANHATTAN_PLUS);
     var dist: Map<string, number> = new Map();
     var parent: Map<string, string> = new Map();
     var pq = new Heap<[string, number, number]>(undefined, Comperators.compManhattan_Fast);
@@ -644,12 +657,15 @@ export class PathFinderComponent {
       tempHex = p;
     });
     this.drawPathLine(tempHex.center, this.destinationHex.center);
+    this.distance = path.length;
+    this.efforts = dist.get(destinationHexCenter) ?? 0;
   }
  //#endregion
 
  // #region a-star with Chebyshev Distance
   public async findPath_Chebyshev(): Promise<void> {
     this.aStar_Chebyshev_Flag = false;
+    this.algorithmDescription = setDescription(constants.CHEBYSHEV);
     const dist: Map<string, number> = new Map();
     const parent: Map<string, string> = new Map();
     const pq = new Heap<[string, number, number]>(undefined, Comperators.compChebyshev);
@@ -740,6 +756,8 @@ export class PathFinderComponent {
       tempHex = p;
     });
     this.drawPathLine(tempHex.center, this.destinationHex.center);
+    this.distance = path.length;
+    this.efforts = dist.get(destinationHexCenter) ?? 0;
   }
   //#endregion
 
