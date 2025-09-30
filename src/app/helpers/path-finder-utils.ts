@@ -59,6 +59,28 @@ export function getManhattanDistance(source: Point, target: Point): number {
     return Math.abs(source.x - target.x) + Math.abs(source.y - target.y);
 };
 
+export function setDescription(algorithm: string): string {
+    let description = "";
+    switch (algorithm) {
+        case "Dijkstra":
+            description = constants.DIJKSTRA_DESCRIPTION;
+            break;
+        case "Manhattan":
+            description = constants.MANHATTAN_DESCRIPTION;
+            break;
+        case "ManhattanPlus":
+            description = constants.MANHATTAN_PLUS_DESCRIPTION;
+            break;
+        case "Chebyshev":
+            description = constants.CHEBYSHEV_DESCRIPTION;
+            break;
+        default:
+            description = "";
+            break;
+    }
+    return description; 
+}
+
 export class Comperators {
 
     static comp: (a: [string, number], b: [string, number]) => boolean = (a, b) => a[1] < b[1];
