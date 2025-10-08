@@ -51,9 +51,9 @@ export class PathFinderComponent {
 
   public ngOnInit(): void {
     this.HEX_SIZE = 18.25;
+    constants.HEX_SIZE = 18.25;
     this.HEX_WIDTH = this.HEX_SIZE * 2;
     this.HEX_HEIGHT = this.HEX_SIZE * Math.sqrt(3);
-    constants.HEX_SIZE = 18.25;
     constants.HEX_WIDTH = constants.HEX_SIZE * 2;
     constants.HEX_HEIGHT = constants.HEX_SIZE * Math.sqrt(3);
   }
@@ -61,11 +61,24 @@ export class PathFinderComponent {
   public ngAfterViewInit(): void {
     this.canvas = this.canvasEle.nativeElement;
     const cntx = this.canvas?.getContext('2d');
+    this.ROWS = this.canvas.height / 35;
+    this.COLS = this.canvas.width / 29;
+    if(this.canvas.clientWidth<600){
+      const s = 19.5;
+      this.HEX_SIZE = s;
+      constants.HEX_SIZE = s;
+      this.HEX_WIDTH = this.HEX_SIZE * 2;
+      this.HEX_HEIGHT = this.HEX_SIZE * Math.sqrt(3);
+      constants.HEX_WIDTH = constants.HEX_SIZE * 2;
+      constants.HEX_HEIGHT = constants.HEX_SIZE * Math.sqrt(3);
+      console.log('rows: ',this.canvas.clientHeight / this.HEX_HEIGHT);
+      console.log('cols: ',this.canvas.width /this.HEX_SIZE);
+      this.ROWS = this.canvas.clientHeight / this.HEX_HEIGHT;
+      this.COLS = (this.canvas.clientWidth / this.HEX_SIZE) + 2;
+    }
     if (cntx) {
       this.cntx = cntx;
       console.log('Drawing on Canvas!!');
-      this.ROWS = this.canvas.height / 35;
-      this.COLS = this.canvas.clientWidth / 29;
       this.drawOnCanvas();
     } else {
       console.log('Canvas is falling!!');
