@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 240px;
+  background: #2c3e50;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+}
+
+/* Collapsed by default on small screens */
+/* @media (max-width: 1300px) {
+  .retro-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+} */
+
+/* Collapse button (arrow) */
+.collapse-btn {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 10px;
+  font-size: 28px;
+  color: white;
+  background: #2c3e50;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+@media (max-width: 1300px) {
+  .collapse-btn {
+    display: block;
+  }
+}
+
+/* Backdrop when sidebar is open */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 10;
+  right: 0;
+  bottom: 20;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}

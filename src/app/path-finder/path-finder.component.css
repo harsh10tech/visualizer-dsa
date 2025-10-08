@@ -30,6 +30,7 @@
   display: flex;
   gap: 10px;
 }
+
 .hexContainer {
   margin: 20px auto;
   padding: 18px;
@@ -81,7 +82,7 @@ top:0;
   display: inline-block;
   padding: 10px 16px;
   color: #111;
-  background: #f7e26b; /* classic retro yellow */
+  background: #f7e26b; 
   border: 2px solid #333;
   box-shadow: 0 0 0 2px #f7e26b, 4px 4px 0 0 #333;
   text-transform: uppercase;
@@ -121,6 +122,79 @@ top:0;
   filter: brightness(1.05);
 }
 
+@media (max-width: 1300px) {
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  .centered-content{
+    order: 1;
+    /* max-height: 60vw; */
+    width: 100%;
+    padding: 0 6px;
+    margin: 0 auto ;
+    box-sizing: border-box ;
+  }
+  .right-panel {
+    order: 2;
+    margin-top: 20px;
+  } 
+  .instructions-panel {
+    order: 3;
+    display: block;
+    list-style-type: disc;
+  }
+}
+@media (max-width: 600px) {
+  .retro-box {
+    display: block;
+    width: 95vw;
+    padding: 6px;
+    margin: 2px auto;
+    box-sizing: border-box;
+    align-items: center;
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 6px;
+  }
+  .retro-btn {
+    flex: 1 1 48%;
+    min-width: 120px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .main .right-panel .efforts-distance {
+    display: block;
+    gap: 10px;
+  }
+  .main .right-panel .efforts-distance .retro-box {
+    background: #f2f19c;
+    font: bold 1rem sans-serif;
+  }
+}
+
+@media (max-width: 1300px) {
+  .centered-content {
+    max-width: 95vw;       /* nearly full viewport width on phones */
+    padding: 0 6px;
+    margin: 0 auto;
+  }
+  .hexContainer {
+    padding: 2px;
+    border-radius: 10px;
+    margin: 8px auto;
+  }
+  #hexCanvas {
+    max-height: calc(65vh);
+    max-width: calc(100vw);
+    width: 100%;
+    height: 650px;
+    display: block;
+  }
+}
 /* Vertical circular toggle placed next to Reset */
 .toggle-vert {
   position: relative;
@@ -191,7 +265,6 @@ top:0;
   cursor: pointer;
 }
 
-/* Preview overlay */
 .preview-overlay {
   position: fixed;
   inset: 0;
