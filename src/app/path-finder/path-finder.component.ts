@@ -64,15 +64,13 @@ export class PathFinderComponent {
     this.ROWS = this.canvas.height / 35;
     this.COLS = this.canvas.width / 29;
     if(this.canvas.clientWidth<600){
-      const s = 19.5;
+      const s = 22;
       this.HEX_SIZE = s;
       constants.HEX_SIZE = s;
       this.HEX_WIDTH = this.HEX_SIZE * 2;
       this.HEX_HEIGHT = this.HEX_SIZE * Math.sqrt(3);
       constants.HEX_WIDTH = constants.HEX_SIZE * 2;
       constants.HEX_HEIGHT = constants.HEX_SIZE * Math.sqrt(3);
-      console.log('rows: ',this.canvas.clientHeight / this.HEX_HEIGHT);
-      console.log('cols: ',this.canvas.width /this.HEX_SIZE);
       this.ROWS = this.canvas.clientHeight / this.HEX_HEIGHT;
       this.COLS = (this.canvas.clientWidth / this.HEX_SIZE) + 2;
     }
@@ -127,9 +125,10 @@ export class PathFinderComponent {
     this.startHex = null;
     this.destinationHex = null;
     this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let row = 0; row < this.ROWS; row++) {
-      for (let col = 0; col < this.COLS; col++) {
+    for (let row = 0; row * this.HEX_HEIGHT < this.canvas.height; row++) {
+      for (let col = 0; col < this.COLS +10; col++) {
         const center = getHexCenter(row, col);
+        if(center.x + this.HEX_SIZE +1 > this.canvas.width +10 || center.y + this.HEX_SIZE> this.canvas.height) continue;
         const hexCordinate = this.drawHexagon(
           center.x,
           center.y,
@@ -256,9 +255,10 @@ export class PathFinderComponent {
     this.distance = 0;
 
     this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let row = 0; row < this.ROWS; row++) {
-      for (let col = 0; col < this.COLS; col++) {
+    for (let row = 0; row * this.HEX_HEIGHT < this.canvas.height; row++) {
+      for (let col = 0; col < this.COLS + 10; col++) {
         const center = getHexCenter(row, col);
+        if(center.x + this.HEX_SIZE +1 > this.canvas.width +10 || center.y + this.HEX_SIZE> this.canvas.height) continue;
         const hexCordinate = this.drawHexagon(
           center.x,
           center.y,

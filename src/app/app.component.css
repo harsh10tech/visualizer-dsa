@@ -9,7 +9,15 @@
   font-family: 'Courier New', Courier, monospace;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  width: max-content;
+  width: fit-content;
   align-items: center;
+  max-width: 100vw;
+  text-align: center;
+  box-sizing: border-box;
 }
-
+.app-title h2 {
+  margin: 0.25rem;
+  font-size: clamp(1.15rem, 2vw + 0.4rem, 2rem);
+  line-height: 1.5;
+  word-wrap: break-word;
+}
