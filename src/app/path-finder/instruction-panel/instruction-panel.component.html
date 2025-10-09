@@ -1,4 +1,7 @@
-<div class="retro-box">
+<div class="collapse-btn" id="instruction-toggle" (click)="toggleInstruction()">
+  <span [innerHTML]="instructionOpen ? '' : 'INSTRUCTIONS'"></span>
+</div>
+<div class="retro-box" id="instruction-panel" [class.active]="instructionOpen">
       <h2 style="text-align: center;"><b>How to Use the Pathfinding Visualizer</b></h2>
       <ol>
         <li><strong>Select Start &amp; Destination:</strong> Click on any two hexagons to set the start and destination points.</li>
@@ -16,3 +19,4 @@
       </ol>
       <p><em>Tip: You can interact with the grid and controls as much as you like—refresh the page to start over at any time.</em></p>
 </div>
+<div class="backdrop" *ngIf="instructionOpen && isMobile" (click)="closeInstruction()"></div>
