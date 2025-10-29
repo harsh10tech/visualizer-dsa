@@ -38,7 +38,7 @@ export class PathFinderComponent {
   public aStar_Chebyshev_Flag = true;
   public captures: string[] = [];
   public selectedCapture: string | null = null;
-  public showThumbnails:boolean = false;
+  public showPreviews:boolean|  null = false;
   public algorithmDescription: string = '';
   public efforts: number = 0;
   public distance: number = 0;
@@ -785,25 +785,18 @@ export class PathFinderComponent {
     }
   }
 
-  public openPreview(url: string): void {
-    this.selectedCapture = url;
+  public openPreview(flag: boolean): void {
+    this.showPreviews = flag;
+    this.selectedCapture = this.captures.length > 0 ? this.captures[0] : null;
   }
 
   public closePreview(): void {
     this.selectedCapture = null;
-    this.showThumbnails = false;
-  }
-
-  public cloneSelected(): void {
-    if (!this.selectedCapture) return;
-    const win = window.open();
-    if (win) {
-      win.document.write('<iframe src="' + this.selectedCapture + '" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%; position:fixed;"></iframe>');
-    }
+    this.showPreviews = false;
   }
 
   public toggleThumbnails(state: boolean): void {
-    this.showThumbnails = state;
+    this.showPreviews = state;
   }
 
   public disabledFlag:()=> boolean =() => !(this.dijkstra_Flag && this.aStar_Manhattan_Flag && this.aStar_Manhattan_Plus_Flag && this.aStar_Chebyshev_Flag); 
