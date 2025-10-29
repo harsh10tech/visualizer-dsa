@@ -199,7 +199,7 @@ top:0;
     display: block;
   }
 }
-/* Vertical circular toggle placed next to Reset */
+
 .toggle-vert {
   position: relative;
   display: inline-block;
@@ -244,31 +244,6 @@ top:0;
   transform: translateY(20px);
 }
 
-
-.captures {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border: 2px solid #333;
-  background: #fffdf2;
-  box-shadow: 0 0 0 2px #fffdf2, 3px 3px 0 0 #333;
-  border-radius: 8px;
-}
-
-.cap-list {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.cap-list img {
-  width: 96px;
-  height: 96px;
-  object-fit: cover;
-  border: 2px solid #333;
-  box-shadow: 2px 2px 0 0 #333;
-  cursor: pointer;
-}
-
 .preview-overlay {
   position: fixed;
   inset: 0;
@@ -305,7 +280,6 @@ top:0;
   display: block;
 }
 
-.clone-btn,
 .close-btn {
   position: absolute;
   top: 8px;
@@ -316,7 +290,6 @@ top:0;
   cursor: pointer;
 }
 
-.clone-btn { right: 48px; }
 .close-btn { right: 8px; }
 
 /* Horizontal strip inside preview overlay */
@@ -326,7 +299,7 @@ top:0;
   padding-top: 8px;
   width: 100%;
   box-sizing: border-box;
-  align-self: stretch; /* make strip span full width of preview */
+  align-self: stretch; 
 }
 
 .preview-strip-inner {
@@ -334,7 +307,7 @@ top:0;
   gap: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0 0 4px 0; /* no left padding so first image touches border */
+  padding: 0 0 4px 0; 
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   justify-content: flex-start;
@@ -342,7 +315,7 @@ top:0;
 
 .preview-strip-inner > img:first-child,
 .preview-strip-inner > *:first-child {
-  margin-left: 0; /* ensure first thumb is flush-left */
+  margin-left: 0;
 }
 
 .preview-strip-inner img {
@@ -423,7 +396,6 @@ top:0;
   box-shadow: 0 2px 0 #bfa200, 0 4px 8px rgba(0,0,0,0.4);
 }
 
-/* Camera Lens in Center */
 .camera-btn .lens {
   width: 18px;
   height: 18px;
@@ -481,50 +453,6 @@ top:0;
 
 .gallery-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #72716d, 0 8px 16px rgba(0,0,0,0.2); }
 .gallery-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #72716d, 0 4px 8px rgba(0,0,0,0.2); }
-
-
-.gallery-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.gallery-icon {
-  font-size: 3rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.thumbnail-dock {
-  display: flex;
-  gap: 2px;
-  margin-top: 2px;
-  padding: 2px;
-  background: rgba(240, 240, 240, 0.9);
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-  animation: fadeIn 0.3s ease-in-out;
-  /* Make gallery horizontally scrollable */
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  max-width: 90vw;
-}
-
-.thumbnail {
-  transition: transform 0.3s;
-  cursor: pointer;
-}
-
-.thumbnail img {
-  width: 10px;
-  height: 10px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.thumbnail:hover {
-  transform: scale(10.5) translateY(-10px);
-}
 
 .overlay {
   position: fixed;
