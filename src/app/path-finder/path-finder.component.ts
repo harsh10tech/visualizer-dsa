@@ -39,9 +39,13 @@ export class PathFinderComponent {
   public captures: string[] = [];
   public selectedCapture: string | null = null;
   public showPreviews:boolean|  null = false;
+  public showNoPathPopup: boolean = false;
   public algorithmDescription: string = '';
   public efforts: number = 0;
   public distance: number = 0;
+  public ssDiscription: string = '';
+  public ssCaptureDiscriptions: string[] = [];
+  public ssIndex: number = 0;
 
 
   @ViewChild('hexCanvas', { static: false })
@@ -253,6 +257,7 @@ export class PathFinderComponent {
     this.algorithmDescription = '';
     this.efforts = 0;
     this.distance = 0;
+    this.ssDiscription = ''; 
 
     this.cntx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (let row = 0; row * this.HEX_HEIGHT < this.canvas.height; row++) {
@@ -453,6 +458,8 @@ export class PathFinderComponent {
       dist.get(destinationHexCenter) === Infinity
     ) {
       console.log('Path not possible');
+      this.ssDiscription = 'Path not possible';
+      this.showNoPathPopup = true;
       return;
     }
     else {
@@ -478,6 +485,7 @@ export class PathFinderComponent {
     this.drawPathLine(tempHex.center, this.destinationHex.center);
     this.distance = path.length;
     this.efforts = dist.get(destinationHexCenter) ?? 0;
+    this.ssDiscription = 'Dijkstra\'s Algorithm found a path with efforts ' + this.efforts +' and distance ' + this.distance;
   }
   //#endregion
 
@@ -550,6 +558,8 @@ export class PathFinderComponent {
       dist.get(destinationHexCenter) === Infinity
     ) {
       console.log('Path not possible');
+      this.ssDiscription = 'Path not possible';
+      this.showNoPathPopup = true;
       return;
     }
     else {
@@ -575,6 +585,7 @@ export class PathFinderComponent {
     this.drawPathLine(tempHex.center, this.destinationHex.center);
     this.distance = path.length;
     this.efforts = dist.get(destinationHexCenter) ?? 0;
+    this.ssDiscription = 'A* with Manhattan Distance found a path with efforts ' + this.efforts +' and distance ' + this.distance;
   }
   //#endregion
 
@@ -647,6 +658,8 @@ export class PathFinderComponent {
       dist.get(destinationHexCenter) === Infinity
     ) {
       console.log('Path not possible');
+      this.ssDiscription = 'Path not possible';
+      this.showNoPathPopup = true;
       return;
     }
     else {
@@ -672,6 +685,7 @@ export class PathFinderComponent {
     this.drawPathLine(tempHex.center, this.destinationHex.center);
     this.distance = path.length;
     this.efforts = dist.get(destinationHexCenter) ?? 0;
+    this.ssDiscription = 'A* with Manhattan Distance (Fast) found a path with efforts ' + this.efforts +' and distance ' + this.distance;
   }
  //#endregion
 
@@ -747,6 +761,8 @@ export class PathFinderComponent {
       dist.get(destinationHexCenter) === Infinity
     ) {
       console.log('Path not possible');
+      this.ssDiscription = 'Path not possible';
+      this.showNoPathPopup = true;
       return;
     } else {
       console.log('Path possible with efforts ', dist.get(destinationHexCenter));
@@ -771,6 +787,7 @@ export class PathFinderComponent {
     this.drawPathLine(tempHex.center, this.destinationHex.center);
     this.distance = path.length;
     this.efforts = dist.get(destinationHexCenter) ?? 0;
+    this.ssDiscription = 'A* with Chebyshev Distance found a path with efforts ' + this.efforts +' and distance ' + this.distance;
   }
   //#endregion
 
@@ -780,6 +797,7 @@ export class PathFinderComponent {
     try {
       const url = this.canvas.toDataURL('image/png');
       this.captures.unshift(url);
+      this.ssCaptureDiscriptions.unshift(this.ssDiscription);
     } catch (e) {
       console.error('Capture failed', e);
     }

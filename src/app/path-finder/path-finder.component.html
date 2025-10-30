@@ -47,19 +47,26 @@
     <div class="preview" (click)="$event.stopPropagation()">
       <div class="preview-main">
         <img [src]="selectedCapture!"/>
+        <div [innerHTML]="ssCaptureDiscriptions[ssIndex]"></div>
       </div>
       <div class="preview-strip" *ngIf="captures.length">
         <div class="preview-strip-inner">
           <img
-            *ngFor="let cap of captures"
+            *ngFor="let cap of captures; index as i"
             [src]="cap"
             [class.active]="cap === selectedCapture"
-            (click)="selectedCapture = cap; $event.stopPropagation()"
+            (click)="selectedCapture = cap; ssIndex = i; $event.stopPropagation()"
             alt="capture"
           />
         </div>
       </div>
       <button class="close-btn" (click)="closePreview()">X</button>
+    </div>
+  </div>
+  <div class="no-path-overlay" *ngIf="showNoPathPopup" (click)="showNoPathPopup = false">
+    <div class="no-path-box" (click)="$event.stopPropagation()">
+      <div class="no-path-title">Sorry, path not possible!!</div>
+      <div class="no-path-sub">please select a different combination.</div>
     </div>
   </div>
 </div>

@@ -180,6 +180,38 @@ top:0;
   }
 }
 
+.no-path-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+  z-index: 1200;
+}
+
+.no-path-box {
+  background: #fef3c7;
+  color: #111;
+  border: 2px solid #333;
+  box-shadow: 0 0 0 2px #fff3bf, 4px 4px 0 0 #333;
+  padding: 14px 18px;
+  border-radius: 8px;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.no-path-title {
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.no-path-sub {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
 @media (max-width: 1300px) {
   .centered-content {
     max-width: 95vw; 
@@ -199,7 +231,7 @@ top:0;
     display: block;
   }
 }
-
+/* Vertical circular toggle placed next to Reset */
 .toggle-vert {
   position: relative;
   display: inline-block;
@@ -268,16 +300,26 @@ top:0;
 }
 
 .preview-main {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
-  max-height: calc(80vh - 120px);
+  max-height: calc(85vh - 120px);
+  grid-template-rows: 95% 5%;
+  justify-items: center;
 }
 
 .preview-main img {
   max-width: 80vw;
   max-height: 80vh;
   display: block;
+}
+
+.preview-main div {
+  margin-top: 8px;
+  padding: 2px 4px;
+  border: 1px solid #333;
+  background: #f7e26b93;
+  font-weight: 400;
+  overflow-wrap: break-word;
 }
 
 .close-btn {
@@ -299,7 +341,7 @@ top:0;
   padding-top: 8px;
   width: 100%;
   box-sizing: border-box;
-  align-self: stretch; 
+  align-self: stretch; /* make strip span full width of preview */
 }
 
 .preview-strip-inner {
@@ -307,7 +349,7 @@ top:0;
   gap: 6px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0 0 4px 0; 
+  padding: 0 0 4px 0; /* no left padding so first image touches border */
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   justify-content: flex-start;
@@ -315,7 +357,7 @@ top:0;
 
 .preview-strip-inner > img:first-child,
 .preview-strip-inner > *:first-child {
-  margin-left: 0;
+  margin-left: 0; /* ensure first thumb is flush-left */
 }
 
 .preview-strip-inner img {
@@ -404,7 +446,6 @@ top:0;
   box-shadow: inset -2px -2px 4px rgba(255,255,255,0.2);
 }
 
-/* Disabled State */
 .camera-btn:disabled {
   background: #999;
   border-color: #777;

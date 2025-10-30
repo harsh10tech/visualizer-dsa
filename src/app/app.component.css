@@ -21,3 +21,9 @@
   line-height: 1.5;
   word-wrap: break-word;
 }
+.app-title div {
+  font-size: 0.85rem;
+  letter-spacing: 0.1px;
+  opacity: 0.8;
+  text-transform:none;
+}
