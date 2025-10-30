@@ -1,10 +1,13 @@
 Visualizer DSA – Pathfinding on a Hex Grid
 ==========================================
 
+```
+README is partly generated with the help of AI
+```
+
 A visual, interactive pathfinding playground built with Angular. Explore classic shortest-path algorithms on a hexagonal grid, toggle traffic weights, capture screenshots, and compare how different heuristics and cost models change routes.
 
-- Algorithms included: Dijkstra, A* (Manhattan heuristic), A* (Chebyshev heuristic)
-- UX features: live canvas visualization, responsive UI, screenshot gallery with horizontal scrolling, and a friendly “Path not possible” popup when no route exists
+- #### Algorithms included: Dijkstra, A* (Manhattan heuristic), A* (Chebyshev heuristic)
 
 
 Quick Start
@@ -29,9 +32,8 @@ npx @angular/cli@latest serve -o
 # App will be available at http://localhost:4200/
 ```
 
-
-### or Go to the live [Page](https://harsh10tech.github.io/visualizer-dsa/)
-
+### Or go to the live [Page](https://harsh10tech.github.io/visualizer-dsa/)
+---
 
 
 Instructions to run the application
